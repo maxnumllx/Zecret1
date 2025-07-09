@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>ระบบแจ้งลาออนไลน์</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      position: relative;
+      font-family: 'Sarabun', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: url('475272320_483714258107950_7590710401559788904_n.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+      color: #444;
+      margin-bottom: 5px;
+    }
+
+    p.sub {
+      text-align: center;
+      color: #888;
+      margin-top: 0;
+      margin-bottom: 30px;
+    }
+
+    form label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    form input, form textarea, form select, form button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 1em;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 5px #3b82f6;
+      outline: none;
+    }
+
+    form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1em;
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.4);
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #2563eb;
+    }
+
+    button:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin-top: -15px;
+      margin-bottom: 15px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .success {
+      background-color: #dcfce7;
+      color: #166534;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .row > div {
+      flex: 1 1 45%;
+      min-width: 150px;
+    }
+
+    @media (max-width: 480px) {
+      .row > div {
+        flex: 1 1 100%;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-container">
+      <img src="LOGO1.png" alt="โลโก้" class="logo" />
+    </div>
+    <h2>📄 ระบบแจ้งลาออนไลน์</h2>
+    <p class="sub">กรอกข้อมูลการลาของคุณ</p>
+
+    <form id="leaveForm" novalidate>
+      <div class="row">
+        <div>
+          <label for="name">ชื่อ *</label>
+          <input id="name" type="text" name="name" placeholder="ชื่อจริง" required />
+          <div class="error" id="error-name" style="display:none;"></div>
+        </div>
+        <div>
+          <label for="surname">สกุล *</label>
+          <input id="surname" type="text" name="surname" placeholder="นามสกุล" required />
+          <div class="error" id="error-surname" style="display:none;"></div>
+        </div>
+      </div>
+
+      <label for="from_date">วันที่เริ่มลา *</label>
+      <input id="from_date" name="from_date" required />
+      <div class="error" id="error-from_date" style="display:none;"></div>
+
+      <label for="to_date">วันที่สิ้นสุดลา *</label>
+      <input id="to_date" name="to_date" required />
+      <div class="error" id="error-to_date" style="display:none;"></div>
+
+      <label for="type">ประเภทลา *</label>
+      <select id="type" name="type" required>
+        <option value="" disabled selected>เลือกประเภทลา</option>
+        <option value="BANK">BANK</option>
+        <option value="AIRDROP">AIRDROP</option>
+        <option value="ลาทั้งวัน">ลาทั้งวัน</option>
+        <option value="ลายาว">ลายาว</option>
+      </select>
+      <div class="error" id="error-type" style="display:none;"></div>
+
+      <label for="reason">ระบุเหตุผลในการลา *</label>
+      <textarea id="reason" name="reason" placeholder="เหตุผลอย่างน้อย 10 ตัวอักษร" required></textarea>
+      <div class="error" id="error-reason" style="display:none;"></div>
+
+      <button type="submit" id="submitBtn">ส่งคำลา</button>
+      <div id="statusMsg"></div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr("#from_date", { dateFormat: "d/m/Y", locale: "th" });
+    flatpickr("#to_date", { dateFormat: "d/m/Y", locale: "th" });
+
+    const form = document.getElementById("leaveForm");
+    const statusMsg = document.getElementById("statusMsg");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function showError(id, message) {
+      const el = document.getElementById(id);
+      if (message) {
+        el.style.display = 'block';
+        el.textContent = message;
+      } else {
+        el.style.display = 'none';
+        el.textContent = '';
+      }
+    }
+
+    function convertDate(input) {
+      const parts = input.split('/');
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      showError('error-name', '');
+      showError('error-surname', '');
+      showError('error-from_date', '');
+      showError('error-to_date', '');
+      showError('error-type', '');
+      showError('error-reason', '');
+      statusMsg.innerHTML = "";
+
+      const data = new FormData(form);
+      const name = data.get("name").trim();
+      const surname = data.get("surname").trim();
+      const fromDateRaw = data.get("from_date");
+      const toDateRaw = data.get("to_date");
+      const type = data.get("type");
+      const reason = data.get("reason").trim();
+
+      const fromDate = convertDate(fromDateRaw);
+      const toDate = convertDate(toDateRaw);
+
+      let valid = true;
+
+      if (!name) {
+        showError('error-name', 'กรุณากรอกชื่อ'); valid = false;
+      }
+      if (!surname) {
+        showError('error-surname', 'กรุณากรอกสกุล'); valid = false;
+      }
+      if (!fromDateRaw) {
+        showError('error-from_date', 'กรุณาเลือกวันที่เริ่มลา'); valid = false;
+      }
+      if (!toDateRaw) {
+        showError('error-to_date', 'กรุณาเลือกวันที่สิ้นสุดลา'); valid = false;
+      }
+      if (fromDate && toDate && new Date(toDate) < new Date(fromDate)) {
+        showError('error-to_date', 'วันที่สิ้นสุดต้องไม่ก่อนวันที่เริ่ม'); valid = false;
+      }
+      if (!type) {
+        showError('error-type', 'กรุณาเลือกประเภทลา'); valid = false;
+      }
+      if (!reason || reason.length < 10) {
+        showError('error-reason', 'เหตุผลควรมีอย่างน้อย 10 ตัวอักษร'); valid = false;
+      }
+
+      if (!valid) return;
+
+      const webhookURL = "https://ptb.discord.com/api/webhooks/1392393963490771005/JxuMtPrLnZS2PHS602hVV7mrxcIe1pahtGfq5QuCyJHknGe_ufTWK2emsFvGkukNTDjF";
+
+      const payload = {
+        embeds: [
+          {
+            title: "📅 แจ้งลาGANG",
+            description: "มีรายการคำขอลาเข้ามาใหม่",
+            color: 3447003,
+            fields: [
+              { name: "👤 ชื่อ", value: `${name} ${surname}`, inline: true },
+              { name: "📅 วันที่ลา", value: `${fromDateRaw} ถึง ${toDateRaw}`, inline: true },
+              { name: "📌 ประเภท", value: type, inline: false },
+              { name: "📝 เหตุผล", value: reason }
+            ],
+            footer: { text: "O11 Leave Bot" },
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "กำลังส่ง...";
+
+      try {
+        const res = await fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          statusMsg.innerHTML = `<div class="success">✅ ส่งคำขอลาสำเร็จ!</div>`;
+          form.reset();
+        } else {
+          statusMsg.innerHTML = `<div class="error">❌ เกิดข้อผิดพลาดกรุณาลองใหม่อีกครั้ง</div>`;
+        }
+      } catch (err) {
+        console.error(err);
+        statusMsg.innerHTML = `<div class="error">❌ ไม่สามารถเชื่อมต่อ Discord ได้</div>`;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "ส่งคำลา";
+      }
+    });
+  </script>
+</body>
+</html>
